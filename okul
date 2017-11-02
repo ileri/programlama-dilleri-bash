@@ -24,7 +24,7 @@ is_file_unique() {
 }
 
 list_students () {
-  IFS=","
+  IFS="," # IFS = Internal Field Seperator
   while read name surname gender c_no
   do
     if [[ $2 =~ ^[0-9]+$ ]] # Arguman bir tamsayı ise
@@ -75,14 +75,12 @@ arg_control () {
 }
 
 main() {
-  arg_control $@
-  return_val=$?
-  if [[ $return_val -eq 0 ]] # arguaman kontrol fonksiyonunun return değeri 0 ise
+  arg_control $@; return_val=$?
+  if [[ $return_val -eq 0 ]] # arguman kontrol fonksiyonunun return değeri 0 ise
   then
-    if [[ -e okul.csv ]]
+    if [[ -e okul.csv ]] # Dosya var ise
     then
-      is_file_unique okul.csv
-      return_val=$?
+      is_file_unique okul.csv; return_val=$?
       if [[ $return_val -eq 0 ]]
       then
         list_students okul.csv $@
