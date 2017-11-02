@@ -14,6 +14,15 @@ write2stderr () {
   >&2 echo $@
 }
 
+is_file_unique() {
+  if [[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] && [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
 list_students () {
   IFS=","
   while read name surname gender c_no
@@ -37,16 +46,7 @@ list_students () {
   return 0
 }
 
-is_file_unique() {
-  if [[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] && [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]]
-  then
-    return 0
-  else
-    return 1
-  fi
-}
-
-arguman_kontrol () {
+arg_control () {
   if [[ $# -gt 1 ]] # $# Fonksiyonun arguman sayısı (betiğin değil)
   then
     >&2 echo "HATA: (0..1) arguman bekleniyordu, $# arguman girildi.!"
@@ -75,7 +75,7 @@ arguman_kontrol () {
 }
 
 main() {
-  arguman_kontrol $@
+  arg_control $@
   return_val=$?
   if [[ $return_val -eq 0 ]] # arguaman kontrol fonksiyonunun return değeri 0 ise
   then
