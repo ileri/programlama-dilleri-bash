@@ -10,7 +10,7 @@
   5 : Dosyada isimler benzersiz değil
 '
 
-write2stderr () {
+write2stderr() {
   >&2 echo $@
 }
 
@@ -21,20 +21,15 @@ is_file_unique() {
   fi
 }
 
-list_students () {
+list_students() {
   IFS="," # IFS = Internal Field Seperator
-  while read name surname gender c_no
-  do
-    if [[ $2 =~ ^[0-9]+$ ]] # Arguman bir tamsayı ise
-    then
-      if [[ $c_no -eq $2 ]] # XXX: Yukarıdaki if ile birleştir?
-      then
+  while read name surname gender c_no;do
+    if [[ $2 =~ ^[0-9]+$ ]];then # Arguman bir tamsayı ise
+      if [[ $c_no -eq $2 ]];then
         echo $name $surname $gender
       fi
-    elif [[ $2 =~ ^[eEkK]$ ]] # Arguman e,E,k,K den biri ise
-    then
-      if [[ $(grep -ixE $gender <<< $2) ]] # XXX: Yukarıdaki if ile birleştir?
-      then
+    elif [[ $2 =~ ^[eEkK]$ ]];then # Arguman e,E,k,K den biri ise
+      if [[ $(grep -ixE $gender <<< $2) ]];then
         echo $name $surname $c_no
       fi
     else
@@ -44,7 +39,7 @@ list_students () {
   return 0
 }
 
-arg_control () {
+arg_control() {
   if [[ $# -gt 1 ]];then # $# Fonksiyonun arguman sayısı (betiğin değil)
     >&2 echo "HATA: (0..1) arguman bekleniyordu, $# arguman girildi.!"
     return 2
@@ -52,14 +47,15 @@ arg_control () {
 
   if [[ $# -eq 1 ]];then # Arguman sayısı 1 ise
     if [[ $1 =~ ^[0-9]+$ ]];then # Arguman bir tamsayı ise
-      if [[ $1 -lt 1 ]] || [[ $1 -gt 4 ]];then # Argumanın değeri 0-4 aralığında ise
+      if [[ $1 -lt 1 ]] || [[ $1 -gt 4 ]];then # Arguman 0-4 aralığında ise
         write2stderr "Girilen sınıf 1-4 aralığında değil!"
         return 3
       fi
     elif [[ $1 =~ ^[eEkK]$ ]];then # Arguman e,E,k,K den biri ise
       return 0
     else 
-      write2stderr "HATA: Cinsiyet belirtmek için e, E, k, K karakterlerinden birini kullanın"
+      write2stderr "HATA: Cinsiyet belirtmek için 
+                    e, E, k, K karakterlerinden birini kullanın"
       return 4
     fi
   fi
