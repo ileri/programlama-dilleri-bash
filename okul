@@ -15,8 +15,8 @@ write2stderr () {
 }
 
 is_file_unique() {
-  if ! ([[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] && [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]])
-  then
+  if ! ([[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] &&
+        [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]]);then
     return 1
   fi
 }
