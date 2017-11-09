@@ -3,10 +3,10 @@
 : '
  Dönüş Kodları
   0 : Başarılı
-  1 : Hatalı sayıda arguman girişi
-  2 : Girilen sınıf sayısı geçerli değil
-  3 : Girilen cinsiyet bilgisi geçerli değil
-  4 : Verilen dosya yok
+  1 : Verilen dosya yok 
+  2 : Hatalı sayıda arguman girişi 
+  3 : Girilen sınıf sayısı geçerli değil 
+  4 : Girilen cinsiyet bilgisi geçerli değil
   5 : Dosyada isimler benzersiz değil
 '
 
@@ -15,10 +15,8 @@ write2stderr () {
 }
 
 is_file_unique() {
-  if [[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] && [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]]
+  if ! ([[ $(cut -d "," -f 1 $1 | uniq -d) == "" ]] && [[ $(cut -d "," -f 2 $1 | uniq -d) == "" ]])
   then
-    return 0
-  else
     return 1
   fi
 }
@@ -47,52 +45,45 @@ list_students () {
 }
 
 arg_control () {
-  if [[ $# -gt 1 ]] # $# Fonksiyonun arguman sayısı (betiğin değil)
-  then
+  if [[ $# -gt 1 ]];then # $# Fonksiyonun arguman sayısı (betiğin değil)
     >&2 echo "HATA: (0..1) arguman bekleniyordu, $# arguman girildi.!"
-    return 1
-  elif [[ $# -eq 1 ]] # Arguman sayısı 1 ise
-  then
-    if [[ $1 =~ ^[0-9]+$ ]] # Arguman bir tamsayı ise
-    then
-      if [[ $1 -gt 0 ]] && [[ $1 -lt 5 ]] # Argumanın değeri 0-4 aralığında ise
-      then
-        return 0
-      else
+    return 2
+  fi
+
+  if [[ $# -eq 1 ]];then # Arguman sayısı 1 ise
+    if [[ $1 =~ ^[0-9]+$ ]];then # Arguman bir tamsayı ise
+      if [[ $1 -lt 1 ]] || [[ $1 -gt 4 ]];then # Argumanın değeri 0-4 aralığında ise
         write2stderr "Girilen sınıf 1-4 aralığında değil!"
-        return 2 
+        return 3
       fi
-    elif [[ $1 =~ ^[eEkK]$ ]] # Arguman e,E,k,K den biri ise
-    then
+    elif [[ $1 =~ ^[eEkK]$ ]];then # Arguman e,E,k,K den biri ise
       return 0
     else 
-      write2stderr "Cinsiyet belirtmek için e, E, k, K karakterlerinden birini kullanın"
-      return 3
+      write2stderr "HATA: Cinsiyet belirtmek için e, E, k, K karakterlerinden birini kullanın"
+      return 4
     fi
-  else
-    return 0
   fi
 }
 
 main() {
-  arg_control $@; return_val=$?
-  if [[ $return_val -eq 0 ]] # arguman kontrol fonksiyonunun return değeri 0 ise
-  then
-    if [[ -e okul.csv ]] # Dosya var ise
-    then
-      is_file_unique okul.csv; return_val=$?
-      if [[ $return_val -eq 0 ]]
-      then
-        list_students okul.csv $@
-      else
-        return 5
-      fi
-    else
-      return 4
-    fi
-  else
-    return $return_val
+  if [[ ! -f okul.csv ]];then # Dosya yoksa
+    write2stderr "HATA: okul.csv dosyası yok!"
+    return 1
   fi
+
+  is_file_unique okul.csv; return_val=$?
+  if [[ ! $return_val -eq 0 ]];then # Dosya içeriği benzersiz değilse
+    write2stderr "HATA: Dosya içeriği benzersiz elemanlardan oluşmuyor!"
+    exit $return_val
+  fi
+
+  arg_control $@; return_val=$?
+  if [[ ! $return_val -eq 0 ]];then # Argumanlar geçerli değilse
+    exit $return_val
+  fi
+
+  list_students okul.csv $@
+
 }
 
 main $@
