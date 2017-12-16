@@ -33,7 +33,7 @@ function setup {
   [ "$status" -eq 0 ] 
 }
 
-@test "arg_control() doğru cinsiyet ve sınıf derecesi başarılı sonuç dönmeli" {
+@test "arg_control() birden fazla argüman ile başarısız sonuç dönmeli" {
   run arg_control e 1 
   [ "$status" -ne 0 ] 
 }
