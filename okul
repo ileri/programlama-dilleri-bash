@@ -37,11 +37,12 @@ list_students() {
 }
 
 arg_control() {
-  [[ $# -gt 1 ]] && die "HATA: (0..1) arguman bekleniyordu, $# arguman girildi.!" 2
+  [[ $# -gt 1 ]] && die "HATA: (0..1) arguman bekleniyordu, $# tanegirildi.!" 2
   if [[ $# -eq 1 ]];then # Arguman sayısı 1 ise
     [[ $1 =~ ^[eEkK]$ ]] || [[ $1 =~ [1-4] ]] && return 0
-    [[ $1 =~ ^[0-9]+$ ]] && [[ $1 -lt 1 ]] || [[ $1 -gt 4 ]] && die "Girilen sınıf 1-4 aralığında değil!" 3
-    die "HATA: Cinsiyet belirtmek için e, E, k, K karakterlerinden birini kullanın" 4
+    [[ $1 =~ ^[0-9]+$ ]] && [[ $1 -lt 1 ]] || [[ $1 -gt 4 ]] &&
+      die "Girilen sınıf 1-4 aralığında değil!" 3
+    die "HATA: Cinsiyet belirtmek için e, E, k, K karakterlerini kullanın" 4
   fi
 }
 
